@@ -1,0 +1,82 @@
+---
+- name: Install and configure monitoring
+  hosts: aws_hosts
+  become: yes
+  tasks:
+
+    - name: Install EPEL repository for RHEL/CentOS systems
+      yum:
+        name: epel-release
+        state: present
+      when: ansible_pkg_mgr == 'yum'
+
+    - name: Configure bcc repo
+      command: >
+        echo "deb https://repo.iovisor.org/apt/$(lsb_release -cs) $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/iovisor.list
+      become: yes  
+      when: ansible_pkg_mgr == 'yum'
+
+    - name: Update the system
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install dependencies for BCC
+      yum:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+          - bcc-tools  # Package name differs on RHEL/CentOS
+          - kernel-devel-{{ ansible_kernel }}  # Different package name on RHEL/CentOS
+          - bcc-devel  # Different package name on RHEL/CentOS
+          - python3-pip
+          - python3-bcc
+
+    - name: Create monitoring directory
+      file:
+        path: /opt/monitoring
+        state: directory
+        mode: '0755'
+
+    - name: Create a virtual environment
+      command: python3 -m venv /opt/monitoring/venv
+      args:
+        creates: /opt/monitoring/venv
+
+    - name: Copy monitoring script
+      copy:
+        src: monitor.py
+        dest: /opt/monitoring/monitor.py
+        mode: '0755'
+
+    - name: Copy requirements.txt
+      copy:
+        src: requirements.txt
+        dest: /opt/monitoring/requirements.txt
+
+    - name: Copy template to create the service 
+      copy:
+        src: ebpf-monitor.service.j2
+        dest: /opt/monitoring/ebpf-monitor.service.j2
+        mode: '0755'
+
+    - name: Install Python requirements in virtual environment
+      command: >
+        /opt/monitoring/venv/bin/pip install -r /opt/monitoring/requirements.txt
+      args:
+        chdir: /opt/monitoring
+
+    - name: Create systemd service
+      copy:
+        src: ebpf-monitor.service.j2
+        dest: /etc/systemd/system/ebpf-monitor.service
+        enabled: yes
+
+    - name: Start monitoring service
+      systemd:
+        name: ebpf-monitor
+        state: started
+        enabled: yes
+        daemon_reload: yes

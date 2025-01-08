@@ -1,0 +1,15 @@
+[Unit]
+Description=EBPF Monitoring Service
+After=network.target
+
+[Service]
+Environment=PYTHONPATH=/usr/lib/python3.9/site-packages/
+ExecStart=/opt/monitoring/venv/bin/python3.9 /opt/monitoring/monitor.py
+WorkingDirectory=/opt/monitoring
+User=root
+Group=root
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
