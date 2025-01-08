@@ -1,0 +1,18 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'email-notifications'
+
+receivers:
+- name: 'email-notifications'
+  email_configs:
+  - to: 'aum@aumpatel.xyz'
+    from: 'aum@aumpatel.xyz'
+    smarthost: smtp.zoho.com:587
+    auth_username: 'your-username'
+    auth_password: 'your-password'
