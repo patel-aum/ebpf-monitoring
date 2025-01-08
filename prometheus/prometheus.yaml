@@ -10,16 +10,20 @@ alerting:
     - static_configs:
         - targets:
           - alertmanager:9093
-
 scrape_configs:
   - job_name: 'server1-ebpf_monitor'
     static_configs:
-      - targets: ['13.232.118.112:8000']
-      - targets: ['3.7.252.130:8000']
-  - job_name: 'prometheus'
+      - targets: ['13.232.118.112:8000', '3.7.252.130:8000']
+        labels:
+          server_name: 'server1'
+  - job_name: 'server2-ebpf_monitor'
     static_configs:
-      - targets: ['localhost:9090']
-
+      - targets: ['13.232.118.112:8000']
+        labels:
+          server_name: 'server1'
+      - targets: ['3.7.252.130:8000']
+        labels:
+          server_name: 'server2'
   - job_name: 'node'
     static_configs:
       - targets: ['node-exporter:9100']
