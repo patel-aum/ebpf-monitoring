@@ -15,7 +15,8 @@ resource "aws_instance" "monitoring-host" {
   ami                    = "ami-078264b8ba71bc45e"
   instance_type          = "t2.medium"
   security_groups = ["launch-wizard-20"]
-  key_name             = "key" 
+  key_name             = "key"
+  user_data = file("ansible_installation.sh")
   tags = {
     Name = "monitoring"
   }
