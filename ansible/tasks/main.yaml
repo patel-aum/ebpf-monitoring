@@ -69,14 +69,23 @@
         chdir: /opt/monitoring
 
     - name: Create systemd service
-      copy:
+      template:
         src: ebpf-monitor.service.j2
         dest: /etc/systemd/system/ebpf-monitor.service
-        enabled: yes
+        mode: '0644'
+      become: yes
+      notify:
+        - Restart ebpf-monitor service
 
-    - name: Start monitoring service
+    - name: Enable and start the service
       systemd:
         name: ebpf-monitor
-        state: started
         enabled: yes
-        daemon_reload: yes
+        state: started
+
+  handlers:
+    - name: Restart ebpf-monitor service
+      systemd:
+        name: ebpf-monitor
+        state: restarted
+

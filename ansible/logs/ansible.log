@@ -949,3 +949,18 @@ core/2.15/reference_appendices/interpreter_discovery.html for more information.
 2025-01-08 16:57:09,514 p=50315 u=ec2-user n=ansible | PLAY RECAP ***************************************************************************************************************************************
 2025-01-08 16:57:09,515 p=50315 u=ec2-user n=ansible | server1                    : ok=11   changed=1    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
 2025-01-08 16:57:09,515 p=50315 u=ec2-user n=ansible | server2                    : ok=9    changed=7    unreachable=0    failed=1    skipped=2    rescued=0    ignored=0   
+2025-01-10 12:42:43,469 p=198995 u=aum n=ansible | ERROR! No action selected, at least one of --host, --graph or --list needs to be specified.
+2025-01-10 12:44:11,674 p=199347 u=aum n=ansible | PLAY [Install and configure monitoring] **********************************************************************************************************
+2025-01-10 12:44:11,683 p=199347 u=aum n=ansible | TASK [Gathering Facts] ***************************************************************************************************************************
+2025-01-10 12:44:13,469 p=199347 u=aum n=ansible |  [ERROR]: User interrupted execution
+
+2025-01-10 12:44:50,959 p=199449 u=aum n=ansible | server1 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Failed to connect to the host via ssh: ssh: connect to host 13.232.118.112 port 22: Connection timed out",
+    "unreachable": true
+}
+2025-01-10 12:44:50,959 p=199449 u=aum n=ansible | server2 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Failed to connect to the host via ssh: ssh: connect to host 3.7.252.130 port 22: Connection timed out",
+    "unreachable": true
+}

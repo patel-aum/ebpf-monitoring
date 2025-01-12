@@ -13,10 +13,11 @@ provider "aws" {
 
 resource "aws_instance" "monitoring-host" {
   ami                    = "ami-078264b8ba71bc45e"
-  instance_type          = "t2.small"
+  instance_type          = "t2.medium"
   security_groups = ["launch-wizard-20"]
+  key_name             = "key" 
   tags = {
-    Name = "ansible"
+    Name = "monitoring"
   }
 }
 
@@ -24,17 +25,16 @@ resource "aws_instance" "server1" {
   ami                    = "ami-078264b8ba71bc45e"
   instance_type          = "t2.small"
   security_groups = ["launch-wizard-20"]
+  key_name             = "key"            
   tags = {
     Name = "server1"
   }
 }
 
-resource "aws_instance" "server2" {
-  ami                    = "ami-078264b8ba71bc45e"
-  instance_type          = "t2.small"
-  security_groups = ["launch-wizard-20"]
-  tags = {
-    Name = "server2"
-  }
+output "monitoring_host_ip" {
+  value = aws_instance.monitoring-host.public_ip
+}
+output "server1_host_ip" {
+  value = aws_instance.server1.public_ip
 }
 
